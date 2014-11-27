@@ -1,6 +1,7 @@
 {
   "name": "monmatch",
   "description": "Suggest secondary monitors by matching DPI",
+  "repository": "russgray/monitor-match",
   "devDependencies": {
     "array-uniq": "^1.0.1",
     "browserify": "^6.3.3",
