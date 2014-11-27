@@ -56,9 +56,9 @@ gulp.task 'test', ->
 
 gulp.task 'clean', ->
     del.sync [
-        './build',
-        './output',
-        './dist'
+        './build/*',
+        './output/*',
+        './dist/*'
     ]
 
-gulp.task 'default', ['clean', 'test', 'js:lint', 'js:minify', 'copy:static']
+gulp.task 'default', ['clean', 'test', 'js:minify', 'copy:static']
