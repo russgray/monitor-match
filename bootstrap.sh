@@ -14,7 +14,11 @@ npm install -g npm-check-updates
 npm install -g npm-clean
 npm install -g jasmine-node
 
+gem install sass bourbon neat bitters
+
 # do work in app directory
-pushd /vagrant
-# sudo -u vagrant npm install
-popd
+# pushd /vagrant
+# su vagrant
+# npm install
+# exit
+# popd
