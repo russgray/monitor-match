@@ -1,5 +1,6 @@
 Monitor = require('./monitor')
-React = require('react')
+
+# React.js should be linked from CDN before including this file
 R = React.DOM
 
 MonitorBox = React.createClass
