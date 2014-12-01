@@ -1,51 +1,89 @@
 browserify = require 'browserify'
 coffee     = require 'gulp-coffee'
+concat     = require 'gulp-concat'
 del        = require 'del'
+fs         = require 'fs'
 gulp       = require 'gulp'
 gutil      = require 'gulp-util'
+handlebars = require 'gulp-compile-handlebars'
 jasmine    = require 'gulp-jasmine'
-jshint     = require 'gulp-jshint'
 plumber    = require 'gulp-plumber'
 rename     = require 'gulp-rename'
+rev        = require 'gulp-rev'
+# sourcemaps = require 'gulp-sourcemaps'
 transform  = require 'vinyl-transform'
 uglify     = require 'gulp-uglify'
 
 
+paths =
+    scripts: ['./src/*.coffee']
+    content: ['./content/*.hbs']
+    vendorjs: []
+    vendorcss: []
+
+
+# transpile coffeescript code into build directory
 gulp.task 'build:coffee', ->
-    gulp.src './src/*.coffee'
+    gulp.src paths.scripts
         .pipe plumber()
         .pipe coffee bare:true
         .pipe gulp.dest './build'
 
 
-gulp.task 'browserify', ['build:coffee'], ->
+gulp.task 'js:concat', ['build:coffee'], ->
+    gulp.src ['./build/react-monitorbox.js']
+        .pipe plumber()
+        .pipe concat 'app.js'
+        .pipe gulp.dest './build'
+
+
+gulp.task 'copy:js', ->
+    gulp.src ['./src/*.js', './vendor/js/*.js']
+        .pipe gulp.dest './dist/js'
+
+
+gulp.task 'copy:css', ->
+    gulp.src ['./vendor/css/**'], 'base': './vendor/css'
+        .pipe gulp.dest './dist/css'
+
+
+gulp.task 'copy:img', ->
+    gulp.src ['./content/img/*']
+        .pipe gulp.dest './dist/img'
+
+
+gulp.task 'package', ['js:concat'], ->
     browserified = transform((filename) ->
         browserify(filename).bundle())
 
-    gulp.src './build/*.js'
+    gulp.src './build/app.js'
         .pipe plumber()
         .pipe browserified
-        .pipe gulp.dest './output'
-
-
-gulp.task 'js:minify', ['browserify'], ->
-    gulp.src './output/react-monitorbox.js'
-        .pipe plumber()
+        .pipe gulp.dest './dist/js'
+        # .pipe sourcemaps.init()
         .pipe uglify()
+        # .pipe sourcemaps.write()
         .pipe rename suffix:'.min'
+        .pipe rev()
+        .pipe gulp.dest './dist/js'
+        .pipe rev.manifest()
         .pipe gulp.dest './dist'
 
 
-gulp.task 'js:lint', ->
-    gulp.src './build/*.js'
-        .pipe plumber()
-        .pipe jshint()
-        .pipe jshint.reporter 'jshint-stylish'
+# comile handlebars templates
+gulp.task 'build:html', ['package'], ->
+    opts =
+        helpers:
+            assetJsPath: (path, ctx) ->
+                ['/js', ctx.data.root[path]].join '/'
+        batch:
+            ['./content/partials']
 
-
-gulp.task 'copy:static', ['browserify'], ->
-    gulp.src ['./content/**', './output/**']
+    manifest = JSON.parse(fs.readFileSync './dist/rev-manifest.json', 'utf8')
+    gulp.src paths.content
         .pipe plumber()
+        .pipe handlebars manifest, opts
+        .pipe rename extname:'.html'
         .pipe gulp.dest './dist'
 
 
@@ -57,8 +95,13 @@ gulp.task 'test', ->
 gulp.task 'clean', ->
     del.sync [
         './build/*',
-        './output/*',
         './dist/*'
-    ]
+    ], force: true
 
-gulp.task 'default', ['clean', 'test', 'js:minify', 'copy:static']
+
+gulp.task 'watch', ->
+    gulp.watch paths.scripts, ['test']
+    gulp.watch paths.content, ['build:html']
+
+
+gulp.task 'default', ['clean', 'test', 'package', 'build:html', 'copy:js', 'copy:css', 'copy:img']
