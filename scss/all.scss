@@ -1,0 +1,18 @@
+@charset "utf-8";
+
+$visual-grid: true;
+
+@import "normalize";
+@import "bourbon";
+@import "base/base";
+@import "base/grid-settings"; // https://github.com/thoughtbot/refills/issues/113
+@import "neat";
+@import "refills/navigation";
+
+.search-form {
+  @include outer-container;
+  article {
+    @include span-columns(3);
+    @include shift(4);
+  }
+}

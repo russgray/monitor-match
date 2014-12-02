@@ -1,13 +1,41 @@
-{{> header }}
+{{> page_top }}
 
-<div class="met_content">
-    <div class="row-fluid">
-        <div class="span12">
-            <div id="content"></div>
+<body>
+    <header class="navigation">
+        <div class="navigation-wrapper">
+            <a href="javascript:void(0)" class="logo">
+                <img src="https://raw.githubusercontent.com/thoughtbot/refills/master/source/images/placeholder_logo_1.png" alt="Logo Image">
+            </a>
+            <a href="" class="navigation-menu-button" id="js-mobile-menu">MENU</a>
+            <div class="nav">
+                <ul id="navigation-menu">
+                    <li class="nav-link"><a href="javascript:void(0)">About</a></li>
+                    <li class="nav-link"><a href="javascript:void(0)">Contact</a></li>
+                </ul>
+            </div>
+            <div class="navigation-tools">
+                <ul id="navigation-menu">
+                    <li class="nav-link"><a href="javascript:void(0)">Sign up</a></li>
+                    <li><a class="he_social ico-facebook" href="#"><i class="fa fa-facebook"></i></a></li>
+                </ul>
+            </div>
         </div>
-    </div>
-</div>
+    </header>
 
-<script src="{{ assetJsPath "app.min.js" }}"></script>
+    <section class="hero">
+    </section>
 
-{{> footer }}
+    <section class="search-form">
+        <article>
+            <div id="content"></div>
+        </article>
+    </section>
+
+    <!-- Scripts -->
+    {{> jquery_js }}
+    {{> react_js }}
+    <script src="{{ assetPath app_js }}"></script>
+
+</body>
+
+{{> page_bottom }}

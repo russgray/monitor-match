@@ -1,16 +1,20 @@
+argv       = require('yargs').argv
 browserify = require 'browserify'
 coffee     = require 'gulp-coffee'
 concat     = require 'gulp-concat'
 del        = require 'del'
 fs         = require 'fs'
 gulp       = require 'gulp'
+gulpif     = require 'gulp-if'
 gutil      = require 'gulp-util'
 handlebars = require 'gulp-compile-handlebars'
 jasmine    = require 'gulp-jasmine'
+minify_css = require 'gulp-minify-css'
 plumber    = require 'gulp-plumber'
+refills    = require('node-refills').includePaths
 rename     = require 'gulp-rename'
 rev        = require 'gulp-rev'
-# sourcemaps = require 'gulp-sourcemaps'
+sass       = require 'gulp-sass'
 transform  = require 'vinyl-transform'
 uglify     = require 'gulp-uglify'
 
@@ -18,6 +22,10 @@ uglify     = require 'gulp-uglify'
 paths =
     scripts: ['./src/*.coffee']
     content: ['./content/*.hbs']
+    sass: ['./scss/*.scss']
+    build_transpiled: ['./build/transpiled']
+    build_packaged: ['./build/packaged']
+    dist: ['./dist']
     vendorjs: []
     vendorcss: []
 
@@ -25,66 +33,91 @@ paths =
 # transpile coffeescript code into build directory
 gulp.task 'build:coffee', ->
     gulp.src paths.scripts
-        .pipe plumber()
         .pipe coffee bare:true
-        .pipe gulp.dest './build'
+        .pipe gulp.dest paths.build_transpiled + '/js'
 
 
-gulp.task 'js:concat', ['build:coffee'], ->
-    gulp.src ['./build/react-monitorbox.js']
+# transpile sass code into build directory
+gulp.task 'build:sass', ->
+    gulp.src paths.sass
         .pipe plumber()
+        .pipe sass includePaths: refills
+        .pipe gulp.dest paths.build_transpiled + '/css'
+
+
+# concatenate required js files into app.js
+gulp.task 'js:concat', ['build:coffee'], ->
+    gulp.src [paths.build_transpiled + '/js/react-monitorbox.js']
         .pipe concat 'app.js'
-        .pipe gulp.dest './build'
+        .pipe gulp.dest paths.build_transpiled + '/js'
 
 
-gulp.task 'copy:js', ->
-    gulp.src ['./src/*.js', './vendor/js/*.js']
-        .pipe gulp.dest './dist/js'
-
-
-gulp.task 'copy:css', ->
-    gulp.src ['./vendor/css/**'], 'base': './vendor/css'
-        .pipe gulp.dest './dist/css'
-
-
-gulp.task 'copy:img', ->
-    gulp.src ['./content/img/*']
-        .pipe gulp.dest './dist/img'
-
-
-gulp.task 'package', ['js:concat'], ->
+gulp.task 'package:js', ['js:concat'], ->
     browserified = transform((filename) ->
         browserify(filename).bundle())
 
-    gulp.src './build/app.js'
+    gulp.src [paths.build_transpiled + '/js/app.js']
         .pipe plumber()
         .pipe browserified
-        .pipe gulp.dest './dist/js'
-        # .pipe sourcemaps.init()
+        .pipe gulp.dest paths.build_packaged + '/js'
         .pipe uglify()
-        # .pipe sourcemaps.write()
         .pipe rename suffix:'.min'
+        .pipe gulp.dest paths.build_packaged + '/js'
+
+
+gulp.task 'package:css', ['build:sass'], ->
+    gulp.src [paths.build_transpiled + '/css/*.css']
+        .pipe gulp.dest paths.build_packaged + '/css'
+        .pipe minify_css()
+        .pipe rename suffix:'.min'
+        .pipe gulp.dest paths.build_packaged + '/css'
+
+
+gulp.task 'cachebust', ['package:css', 'package:js'], ->
+    gulp.src [paths.build_packaged + '/**/*.js', paths.build_packaged + '/**/*.css']
         .pipe rev()
-        .pipe gulp.dest './dist/js'
+        .pipe gulp.dest './dist'
         .pipe rev.manifest()
         .pipe gulp.dest './dist'
 
 
 # comile handlebars templates
-gulp.task 'build:html', ['package'], ->
+gulp.task 'build:html', ['cachebust'], ->
     opts =
         helpers:
-            assetJsPath: (path, ctx) ->
-                ['/js', ctx.data.root[path]].join '/'
+            assetPath: (path, ctx) ->
+                ctx.data.root[path]
         batch:
             ['./content/partials']
 
-    manifest = JSON.parse(fs.readFileSync './dist/rev-manifest.json', 'utf8')
+    template_data = JSON.parse(fs.readFileSync './dist/rev-manifest.json', 'utf8')
+    template_data.app_js = if argv.production then 'js/app.min.js' else 'js/app.js'
+    template_data.app_css = if argv.production then 'css/all.min.css' else 'css/all.css'
+
     gulp.src paths.content
         .pipe plumber()
-        .pipe handlebars manifest, opts
+        .pipe handlebars template_data, opts
         .pipe rename extname:'.html'
         .pipe gulp.dest './dist'
+
+
+
+# deploy vendor code
+
+# gulp.task 'copy:js', ->
+#     gulp.src ['./src/*.js', './vendor/js/*.js']
+#         .pipe gulp.dest './dist/js'
+
+
+# gulp.task 'copy:css', ->
+#     gulp.src ['./vendor/css/**'], 'base': './vendor/css'
+#         .pipe gulp.dest './dist/css'
+
+
+# gulp.task 'copy:img', ->
+#     gulp.src ['./content/img/*']
+#         .pipe gulp.dest './dist/img'
+
 
 
 gulp.task 'test', ->
@@ -100,8 +133,9 @@ gulp.task 'clean', ->
 
 
 gulp.task 'watch', ->
-    gulp.watch paths.scripts, ['test']
-    gulp.watch paths.content, ['build:html']
+    gulp.watch paths.scripts, ['default']
+    gulp.watch paths.sass, ['default']
+    gulp.watch './content/*', ['default']
 
 
-gulp.task 'default', ['clean', 'test', 'package', 'build:html', 'copy:js', 'copy:css', 'copy:img']
+gulp.task 'default', ['clean', 'test', 'cachebust', 'build:html']
