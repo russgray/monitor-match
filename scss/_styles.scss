@@ -1,0 +1,7 @@
+.search-form {
+  @include outer-container;
+  article {
+    @include span-columns(3);
+    @include shift(4);
+  }
+}

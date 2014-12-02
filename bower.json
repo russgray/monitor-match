@@ -1,0 +1,18 @@
+{
+  "name": "monitor-match",
+  "version": "0.0.0",
+  "homepage": "https://github.com/russgray/monitor-match",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "jquery": "~2.1.1",
+    "fontawesome": "~4.2.0"
+  }
+}

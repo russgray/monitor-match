@@ -12,7 +12,6 @@ MonitorBox = React.createClass
 
     render: ->
         R.div className:"monitorBox",
-            R.h1 null, 'Monitors'
             React.createElement MonitorForm, onMonitorSubmit:this.handleMonitorSubmit
             React.createElement MonitorList, monitors:@state.monitors
 
@@ -25,10 +24,6 @@ MonitorForm = React.createClass
 
         m = Monitor.create_monitor x, y, diag
         @props.onMonitorSubmit m
-
-        # @refs.x.getDOMNode().value = ''
-        # @refs.y.getDOMNode().value = ''
-        # @refs.diag.getDOMNode().value = ''
 
     render: ->
         R.form className:"monitorForm", onSubmit:this.handleSubmit,

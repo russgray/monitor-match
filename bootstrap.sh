@@ -13,6 +13,7 @@ npm install -g gulp
 npm install -g npm-check-updates
 npm install -g npm-clean
 npm install -g jasmine-node
+npm install -g bower
 
 # do work in app directory
 # pushd /vagrant

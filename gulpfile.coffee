@@ -25,7 +25,7 @@ paths =
     sass: ['./scss/*.scss']
     build_transpiled: ['./build/transpiled']
     build_packaged: ['./build/packaged']
-    dist: ['./dist']
+    dist: './dist'
     vendorjs: []
     vendorcss: []
 
@@ -76,9 +76,9 @@ gulp.task 'package:css', ['build:sass'], ->
 gulp.task 'cachebust', ['package:css', 'package:js'], ->
     gulp.src [paths.build_packaged + '/**/*.js', paths.build_packaged + '/**/*.css']
         .pipe rev()
-        .pipe gulp.dest './dist'
+        .pipe gulp.dest paths.dist
         .pipe rev.manifest()
-        .pipe gulp.dest './dist'
+        .pipe gulp.dest paths.dist
 
 
 # comile handlebars templates
@@ -103,6 +103,23 @@ gulp.task 'build:html', ['cachebust'], ->
 
 
 # deploy vendor code
+
+gulp.task 'fontawesome:css', ->
+    gulp.src './bower_components/fontawesome/css/*'
+        .pipe gulp.dest paths.dist + '/css'
+
+
+gulp.task 'fontawesome:fonts', ->
+    gulp.src './bower_components/fontawesome/fonts/*'
+        .pipe gulp.dest paths.dist + '/fonts'
+
+
+gulp.task 'jquery:js', ->
+    gulp.src './bower_components/jquery/dist/*'
+        .pipe gulp.dest paths.dist + '/js'
+
+
+gulp.task 'bower', ['fontawesome:css', 'fontawesome:fonts', 'jquery:js' ]
 
 # gulp.task 'copy:js', ->
 #     gulp.src ['./src/*.js', './vendor/js/*.js']
@@ -138,4 +155,4 @@ gulp.task 'watch', ->
     gulp.watch './content/*', ['default']
 
 
-gulp.task 'default', ['clean', 'test', 'cachebust', 'build:html']
+gulp.task 'default', ['clean', 'test', 'cachebust', 'build:html', 'bower']
