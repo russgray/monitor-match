@@ -27,10 +27,10 @@ MonitorForm = React.createClass
 
     render: ->
         R.form className:"monitor-form", onSubmit:this.handleSubmit,
-            R.input type:"number", placeholder:"Horizontal resolution",   required:"required", ref:"x"
-            R.input type:"number", placeholder:"Vertical resolution",     required:"required", ref:"y"
+            R.input type:"number", placeholder:"Horizontal resolution",   required:"required", ref:"x", defaultValue:"2560"
+            R.input type:"number", placeholder:"Vertical resolution",     required:"required", ref:"y", defaultValue:"1440"
             R.input type:"number", placeholder:"Diagonal size in inches", required:"required", ref:"diag", \
-                    min:"10", max:"70", step:"0.5", defaultValue:"19"
+                    min:"10", max:"70", step:"0.5", defaultValue:"27"
             R.input type:"submit", value:"Search"
 
 MonitorList = React.createClass
@@ -42,7 +42,10 @@ MonitorList = React.createClass
 MonitorItem = React.createClass
     render: ->
         R.div className:"monitor",
-            R.p className:"monitor-spec", @props.monitorSpec
+            R.div className:"image",
+                R.img src:"http://placehold.it/200x200"
+            R.div className:"name", "My monitor from Amazon"
+            R.div className:"spec", @props.monitorSpec
 
 # jquery needs to be present for this
 if $('#content').length > 0

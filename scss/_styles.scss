@@ -1,7 +1,36 @@
-.search-form {
-  @include outer-container;
-  article {
-    @include span-columns(3);
-    @include shift(4);
-  }
+section {
+    @include outer-container;
+    article {
+        @include span-columns(8);
+        @include shift(2);
+    }
+}
+
+.intro-text {
+    margin-bottom: 2em;
+}
+
+.monitor-form {
+    @include outer-container;
+    @include span-columns(6);
+    @include shift(3);
+}
+
+div.monitor {
+    @include outer-container;
+    @include span-columns(8);
+
+    .image {
+        @include span-columns(3 of 8);
+    }
+
+    .name {
+        @include span-columns(2 of 8);
+
+    }
+
+    .spec {
+        @include span-columns(3 of 8);
+
+    }
 }
