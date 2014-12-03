@@ -1,36 +1,39 @@
-section {
-    @include outer-container;
-    article {
-        @include span-columns(8);
-        @include shift(2);
-    }
-}
-
-.intro-text {
+div.intro-text {
+    @include outer-container();
     margin-bottom: 2em;
 }
 
-.monitor-form {
-    @include outer-container;
-    @include span-columns(6);
-    @include shift(3);
+div#content {
+    margin-bottom: 2em;
 }
 
-div.monitor {
+div.monitor-box {
     @include outer-container;
-    @include span-columns(8);
 
-    .image {
-        @include span-columns(3 of 8);
+    form.monitor-form {
+        @include span-columns(2);
+        @include shift(5);
+        margin-bottom: 2em;
     }
 
-    .name {
-        @include span-columns(2 of 8);
+    div.monitor {
+        @include span-columns(8);
+        @include shift(2);
 
+        .image {
+            @include span-columns(3);
+        }
+
+        .name {
+            @include span-columns(2);
+        }
+
+        .spec {
+            @include span-columns(3);
+        }
     }
+}
 
-    .spec {
-        @include span-columns(3 of 8);
-
-    }
+div {
+    // border: 1px solid rgba(255,255,255, 0.5);
 }

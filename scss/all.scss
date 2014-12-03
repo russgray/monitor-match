@@ -5,9 +5,16 @@ $visual-grid: true;
 @import "bourbon";
 @import "base/base";
 @import "base/grid-settings"; // https://github.com/thoughtbot/refills/issues/113
+
+// Overwrite breakpoint from grid-settings which shows visual grid incorrectly http://stackoverflow.com/q/22523615
+$large-screen-up: new-breakpoint(min-width $large-screen 12);
+
 @import "neat";
+
+
+@import "scss/styles";
+
 @import "refills/navigation";
 @import "refills/intro-text";
 @import "refills/footer";
 
-@import "scss/styles";
