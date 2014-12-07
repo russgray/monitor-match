@@ -1,6 +1,14 @@
 // Marsala heading for trendiness? ;-)
 // http://qz.com/306879/how-you-can-use-pantones-color-of-the-year/
-// #955251
+$marsala: #955251;
+
+header.navigation {
+    background-color: $marsala;
+}
+
+%button {
+    background-color: $base-button-color;
+}
 
 div.intro-text {
     @include outer-container();
@@ -15,25 +23,25 @@ div.monitor-box {
     @include outer-container;
 
     form.monitor-form {
-        @include span-columns(2);
-        @include shift(5);
+        @include span-columns(4);
+        @include shift(4);
         margin-bottom: 2em;
     }
 
     div.monitor {
-        @include span-columns(8);
-        @include shift(2);
+        @include span-columns(10);
+        @include shift(1);
 
         .image {
-            @include span-columns(3);
+            @include span-columns(3 of 10);
         }
 
         .name {
-            @include span-columns(2);
+            @include span-columns(3 of 10);
         }
 
         .spec {
-            @include span-columns(3);
+            @include span-columns(4 of 10);
         }
     }
 }

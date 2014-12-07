@@ -16,7 +16,7 @@ describe 'A monitor', ->
 
     it 'finds similar monitors', ->
         m = monitor.create_monitor 2560, 1440, 27
-        similar = m.find_similar()
+        similar = m.find_similar(10)
         expect(similar.length).toBeGreaterThan(1)
 
     describe 'factory', ->

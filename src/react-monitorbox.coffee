@@ -5,7 +5,10 @@ R = React.DOM
 
 MonitorBox = React.createClass
     handleMonitorSubmit: (monitor) ->
-        this.setState monitors:monitor.find_similar()
+        monitors = monitor.find_similar 12
+        monitors.sort (a, b) ->
+            return if a.diag >= b.diag then 1 else -1
+        this.setState monitors:monitors
 
     getInitialState: ->
         monitors: []
@@ -37,15 +40,16 @@ MonitorList = React.createClass
     render: ->
         R.div className:"monitor-list",
             for monitor in @props.monitors
-                React.createElement MonitorItem, monitorSpec:monitor.toString(), key:monitor.key
+                React.createElement MonitorItem, monitor:monitor, key:monitor.key
 
 MonitorItem = React.createClass
     render: ->
         R.div className:"monitor",
             R.div className:"image",
-                R.img src:"http://placehold.it/200x200"
-            R.div className:"name", "My monitor from Amazon"
-            R.div className:"spec", @props.monitorSpec
+                R.img src:@props.monitor.img or "http://placehold.it/200x200"
+            R.div className:"name",
+                R.a href:@props.monitor.uri, @props.monitor.name or 'Go to Amazon'
+            R.div className:"spec", @props.monitor.toString()
 
 # jquery needs to be present for this
 if $('#content').length > 0

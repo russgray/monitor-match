@@ -16,8 +16,8 @@ npm install -g jasmine-node
 npm install -g bower
 
 # do work in app directory
-# pushd /vagrant
-# su vagrant
-# npm install
-# exit
-# popd
+pushd /vagrant
+su vagrant
+npm install --no-bin-links
+exit
+popd

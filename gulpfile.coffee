@@ -102,6 +102,11 @@ gulp.task 'build:html', ['cachebust'], ->
 
 
 
+# assets (TODO: optimise)
+gulp.task 'assets:copy', ->
+    gulp.src './assets/**/*'
+        .pipe gulp.dest paths.dist
+
 # deploy vendor code
 
 gulp.task 'fontawesome:css', ->
@@ -155,4 +160,4 @@ gulp.task 'watch', ->
     gulp.watch './content/*', ['default']
 
 
-gulp.task 'default', ['clean', 'test', 'cachebust', 'build:html', 'bower']
+gulp.task 'default', ['clean', 'test', 'cachebust', 'build:html', 'assets:copy', 'bower']
