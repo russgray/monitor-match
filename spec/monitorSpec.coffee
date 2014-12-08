@@ -1,6 +1,8 @@
-monitor = require('../src/monitor.coffee')
-uniq    = require('array-uniq')
-dump    = require('stringify-object')
+monitor = require '../src/monitor.coffee'
+uniq    = require 'array-uniq'
+dump    = require 'stringify-object'
+fs      = require 'fs'
+
 
 describe 'A monitor', ->
 
@@ -20,12 +22,24 @@ describe 'A monitor', ->
         similar = m.find_similar(10)
         expect(similar.length).toBeGreaterThan(1)
 
+    it 'creates a sensible default img name', ->
+        m = monitor.create_monitor 2560, 1440, 27
+        expect(m.img).toEqual('img/monitors/2560x1440x27.jpg')
+
+    describe 'thumbnail', ->
+        for m in monitor.monitors
+            do (m) ->
+                p = 'assets/' + m.img
+                describe 'for monitor ' + m.key, ->
+                    it 'should be at path ' + p, ->
+                        expect(fs.existsSync('assets/' + m.img)).toBe(true)
+
     describe 'factory', ->
-        it 'creates monitors with correct dpi', ->
-            for m in monitor.monitors
-                do (m) ->
-                    m1 = monitor.create_monitor m.x, m.y, m.diag
-                    expect monitor.dpi_equals m.dpi, m1.dpi
+        # it 'creates monitors with correct dpi', ->
+        #     for m in monitor.monitors
+        #         do (m) ->
+        #             m1 = monitor.create_monitor m.spec.x, m.spec.y, m.spec.diag
+        #             expect(monitor.dpi_equals m.spec.dpi, m1.spec.dpi).toBe(true)
 
         it 'has unique default monitors', ->
             keys = (m.key for m in monitor.monitors)
