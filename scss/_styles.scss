@@ -28,6 +28,11 @@ div.monitor-box {
         margin-bottom: 2em;
     }
 
+    div.selected-monitor {
+        @include span-columns(6);
+        @include shift(3);
+    }
+
     div.monitor {
         @include span-columns(10);
         @include shift(1);

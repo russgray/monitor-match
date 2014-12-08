@@ -8,14 +8,16 @@ MonitorBox = React.createClass
         monitors = monitor.find_similar 12
         monitors.sort (a, b) ->
             return if a.diag >= b.diag then 1 else -1
-        this.setState monitors:monitors
+        this.setState monitors:monitors, selected:monitor
 
     getInitialState: ->
-        monitors: []
+        monitors: [],
+        selected: null
 
     render: ->
         R.div className:"monitor-box",
             React.createElement MonitorForm, onMonitorSubmit:this.handleMonitorSubmit
+            React.createElement MonitorSelection, monitor:@state.selected
             React.createElement MonitorList, monitors:@state.monitors
 
 MonitorForm = React.createClass
@@ -36,6 +38,13 @@ MonitorForm = React.createClass
                     min:"10", max:"70", step:"0.5", defaultValue:"27"
             R.input type:"submit", value:"Search"
 
+
+MonitorSelection = React.createClass
+    render: ->
+        R.div className:"selected-monitor",
+            R.p(null, "Your monitor has a DPI of #{@props.monitor.spec.dpi}. The following monitors would be a good match for it!") if @props.monitor
+
+
 MonitorList = React.createClass
     render: ->
         R.div className:"monitor-list",
@@ -46,9 +55,9 @@ MonitorItem = React.createClass
     render: ->
         R.div className:"monitor",
             R.div className:"image",
-                R.img src:@props.monitor.img or "http://placehold.it/200x200"
+                R.img src:@props.monitor.img
             R.div className:"name",
-                R.a href:@props.monitor.uri, @props.monitor.name or 'Go to Amazon'
+                R.a href:@props.monitor.uri, @props.monitor.name
             R.div className:"spec", @props.monitor.toString()
 
 # jquery needs to be present for this
