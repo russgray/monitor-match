@@ -1,5 +1,6 @@
 monitor = require('../src/monitor.coffee')
 uniq    = require('array-uniq')
+dump    = require('stringify-object')
 
 describe 'A monitor', ->
 
@@ -27,5 +28,6 @@ describe 'A monitor', ->
                     expect monitor.dpi_equals m.dpi, m1.dpi
 
         it 'has unique default monitors', ->
-            keys = m.key for m in monitor.monitors
-            expect(keys.length, uniq(keys).length)
+            keys = (m.key for m in monitor.monitors)
+            # console.log dump(keys)
+            expect(keys.length).toEqual(uniq(keys).length)
