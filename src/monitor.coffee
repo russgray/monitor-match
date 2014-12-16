@@ -86,6 +86,9 @@ class Monitor
             'http://www.amazon.co.uk/LG-34UM95-inch-Ultrawide-Monitor/dp/B00JXD6DL0/'),
 
         # 4K monitors
+        new Monitor(new MonitorSpec(3840, 2160, 24),
+            'Dell UP2414Q UltraSharp 24 inch Monitor',
+            'http://www.amazon.co.uk/Dell-UP2414Q-UltraSharp-inch-Monitor/dp/B00HF4VKLW'),
         new Monitor(new MonitorSpec(3840, 2160, 28),
             'Dell P2815Q 28 inch Ultra HD 4K LED Monitor',
             'http://www.amazon.co.uk/Dell-P2815Q-inch-Ultra-Monitor/dp/B00IOUBOB2/'),
