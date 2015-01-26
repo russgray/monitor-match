@@ -1,5 +1,5 @@
 apt-get update
-apt-get install -y vim-nox build-essential npm git curl nodejs-legacy
+apt-get install -y vim-nox build-essential npm git curl nodejs-legacy fabric
 
 # grab rc files for niceness
 if [ -d /home/vagrant/.vim/bundle ]; then
